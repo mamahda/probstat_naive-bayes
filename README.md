@@ -85,7 +85,115 @@ Because of its probabilistic nature, Bayes-based models provide not only class p
 
 This property makes Bayesian approaches particularly useful in applications such as spam detection, medical diagnosis, and cybersecurity intrusion detection.
 
-## How Bayes Theory Implemented on Naive Bayes Model
+## How Bayes Theory Implemented in the Naive Bayes Model
+
+The Naive Bayes classifier applies Bayes' Theorem to perform classification tasks **by estimating the probability that a data instance belongs to a particular class based on its observed features**. In the context of cybersecurity intrusion detection, the model uses Bayes' Theorem to estimate the probability that a network session is an **attack** or **normal traffic**.
+
+The classifier calculates the probability of each class given the observed features and then assigns the class with the highest probability.
+
+The mathematical formulation used in Naive Bayes is:
+
+$$
+P(C \mid X_1, X_2, ..., X_n) =
+\frac{P(C) \cdot P(X_1, X_2, ..., X_n \mid C)}
+{P(X_1, X_2, ..., X_n)}
+$$
+
+Where:
+
+| Term | Meaning |
+|-----|-----|
+| $C$ | Class label (e.g., **Attack** or **Normal**) |
+| $X_1, X_2, ..., X_n$ | Observed features such as protocol type, encryption used, browser type, session duration, and packet counts |
+| $P(C \mid X_1, ..., X_n)$ | Posterior probability: probability of class $C$ given the observed features |
+| $P(C)$ | Prior probability of class $C$ |
+| $P(X_1, ..., X_n \mid C)$ | Likelihood: probability of observing the features if the class is $C$ |
+| $P(X_1, ..., X_n)$ | Evidence: overall probability of observing the features |
+
+Since the denominator $P(X_1, ..., X_n)$ is constant for all classes, the classifier focuses on maximizing the numerator:
+
+$$
+P(C) \cdot P(X_1, X_2, ..., X_n \mid C)
+$$
+
+---
+
+### Implementation Steps in the Naive Bayes Model
+
+In practice, the Naive Bayes classifier follows several steps during training and prediction.
+
+#### 1. Calculate Prior Probabilities
+
+The model first computes the **prior probability** of each class from the training dataset.
+
+For example:
+
+- $(P(Attack))$ = number of attack samples / total samples
+- $(P(Normal))$ = number of normal samples / total samples
+
+This represents how frequently each class appears in the data.
+
+---
+
+#### 2. Estimate Feature Likelihoods
+
+Next, the model calculates the probability of each feature value occurring given a particular class.
+
+Examples in a cybersecurity dataset include:
+
+- Probability that a certain **protocol type** occurs during an attack
+- Probability that a specific **browser type** appears in normal traffic
+- Probability of **encryption usage** given an attack
+
+The exact method used to compute these probabilities depends on the **variant of Naive Bayes** (Gaussian, Multinomial, Bernoulli, etc.).
+
+---
+
+#### 3. Compute Posterior Probabilities
+
+When a new network session is observed, the model calculates the posterior probability for each class by multiplying the prior probability with the likelihood of the observed features.
+
+This produces values such as:
+
+- $(P(Attack \mid Observed\ Features))$
+- $(P(Normal \mid Observed\ Features))$
+
+---
+
+#### 4. Choose the Most Probable Class
+
+The classifier then compares the posterior probabilities and selects the class with the highest value.
+
+If:
+
+$$
+P(Attack \mid X) > P(Normal \mid X)
+$$
+
+then the session is classified as a **cyber attack**. Otherwise, it is classified as **normal network traffic**.
+
+---
+
+### Application in Cyber Attack Detection
+
+In intrusion detection systems, network sessions contain many measurable features such as:
+
+- protocol type
+- encryption usage
+- browser type
+- traffic volume
+- session duration
+
+The Naive Bayes model analyzes these features and estimates the probability that the observed behavior corresponds to a **malicious activity**.
+
+Because Naive Bayes relies on probability distributions rather than complex optimization, it offers several advantages:
+
+- Fast training and prediction
+- Scalable to large datasets
+- Works well with high-dimensional data
+- Provides probabilistic interpretation of predictions
+
+These characteristics make Naive Bayes a practical method for **cybersecurity intrusion detection**, where systems must analyze large amounts of network traffic and detect suspicious behavior efficiently.
 
 ## Overview about the Dataset
 
