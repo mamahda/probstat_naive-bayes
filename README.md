@@ -1,28 +1,24 @@
 # Naive Bayes to Detect Cyber Attack
 
-Team 5:
+## Group 5:
+### Team Members
+| No | Name | NRP |
+|---|---|---|
+| 1 | Raynald Ramadhani Fachriansyah | 5025241020 |
+| 2 | Ferdian Ardra Hafizhan | 5025241033 |
+| 3 | Gilbran Mahdavikia Raja | 5025241134 |
+| 4 | Afarrel Febryan Ghiffari Putra Andy | 5025241137 |
 
-1. Ferdian Ardra Hafizhan (5025241033)
-2. Raynald Ramadhani Fachriansyah (5025241020)
-3. Gilbran Mahdavikia Raja (5025241134)
-4. Afarrel Febryan Ghiffari Putra Andy (5025241137)
+## Table of Contents
+
+- [Bayes Theory](#bayes-theory)
+- [Overview about the Dataset](#overview-about-the-dataset)
+- [How Bayes Theory Implemented in the Naive Bayes Model](#how-bayes-theory-implemented-in-the-naive-bayes-model)
+- [Naive Bayes Implementation for Cyber Attack Detection and Model Evaluation](#naive-bayes-implementation-for-cyber-attack-detection)
 
 ## Bayes Theory
 
 Bayes' Theorem is a fundamental concept in probability theory that describes how the probability of a hypothesis can be updated when new evidence becomes available. It provides a mathematical framework for reasoning under uncertainty by combining prior knowledge with observed data.
-
-The general form of Bayes' Theorem is:
-
-![rumus bayes](./asset/rumus-bayes.png)
-
-Where:
-
-| Term      | Meaning                                                                                       |
-| --------- | --------------------------------------------------------------------------------------------- |
-| P(A \| B) | Posterior probability: the probability of event **A** occurring given that **B** has occurred |
-| P(B \| A) | Likelihood: the probability of observing **B** if **A** is true                               |
-| P(A)      | Prior probability: the initial probability of **A** before observing any evidence             |
-| P(B)      | Evidence: the overall probability of observing **B**                                          |
 
 The theorem shows how the posterior probability is computed by combining the prior belief with the likelihood of the observed evidence.
 
@@ -36,40 +32,44 @@ This allows Bayes' Theorem to be written as:
 
 This formulation is particularly useful in classification problems where there are multiple possible classes.
 
-### Intuition Behind Bayes' Theorem
 
-Bayes' Theorem can be interpreted as a way to update beliefs after observing new evidence.
+## Overview about the Dataset
 
-1. Start with an initial belief about an event (prior probability).
-2. Observe new data or evidence.
-3. Update the probability of the event based on how consistent the evidence is with that event.
+![alt text](asset/image.png)
 
-The updated probability is called the posterior probability.
+The dataset used in this project contains simulated cybersecurity session data that represents network activities and potential attack patterns.
 
-### Example in Cyber Attack Detection
+link to dataset: https://www.kaggle.com/datasets/dnkumars/cybersecurity-intrusion-detection-dataset
 
-In the context of cybersecurity intrusion detection, Bayes' Theorem can be used to estimate the probability that a network session is a cyber attack based on observed network features.
+Each row represents a network session and contains several features related to network behavior.
 
-For example:
+### Dataset Features
 
-- Event (A): the session is a cyber attack.
-- Evidence (B): suspicious network behavior such as many failed login attempts, low IP reputation score, or unusual access time.
+| Feature             | Type        | Description                                                                  |
+| ------------------- | ----------- | ---------------------------------------------------------------------------- |
+| network_packet_size | Numerical   | The size of packets transmitted during a network session.                    |
+| protocol_type       | Categorical | The network protocol used during communication (TCP or UDP).                 |
+| login_attempts      | Numerical   | Number of login attempts within the session.                                 |
+| session_duration    | Numerical   | The total duration of the network session.                                   |
+| encryption_used     | Categorical | Type of encryption used in the connection.                                   |
+| ip_reputation_score | Numerical   | A score indicating the trustworthiness of the source IP address.             |
+| failed_logins       | Numerical   | Number of failed authentication attempts.                                    |
+| browser_type        | Categorical | Browser used in the session.                                                 |
+| unusual_time_access | Binary      | Indicates whether the session occurred at an unusual time.                   |
+| attack_detected     | Binary      | Target label indicating whether the session is classified as a cyber attack. |
 
-Using Bayes' Theorem, the model estimates:
+Target label indicating whether the session is classified as a cyber attack.
 
-```
-P(Attack | Observed Features)
-```
+### Dataset 5 First Row:
 
-This represents the probability that a session is malicious given the observed network activity.
+| session_id | network_packet_size | protocol_type | login_attempts | session_duration   | encryption_used | ip_reputation_score | failed_logins | browser_type | unusual_time_access | attack_detected                                     |
+| ---------- | ------------------- | ------------- | -------------- | ------------------ | --------------- | ------------------- | ------------- | ------------ | ------------------- | --------------------------------------------------- |
+| SID_00001  | 599                 | TCP           | 4              | 492.9832634426563  | DES             | 0.606818080396889   | 1             | Edge         | 0                   | <span style="color:red;font-weight:bold">1</span>   |
+| SID_00002  | 472                 | TCP           | 3              | 1557.9964611204384 | DES             | 0.30156896759608937 | 0             | Firefox      | 0                   | <span style="color:green;font-weight:bold">0</span> |
+| SID_00003  | 629                 | TCP           | 3              | 75.04426166420741  | DES             | 0.7391643279163831  | 2             | Chrome       | 0                   | <span style="color:red;font-weight:bold">1</span>   |
+| SID_00004  | 804                 | UDP           | 4              | 601.2488351708328  | DES             | 0.12326717575248465 | 0             | Unknown      | 0                   | <span style="color:red;font-weight:bold">1</span>   |
+| SID_00005  | 453                 | TCP           | 5              | 532.5408884201419  | AES             | 0.05487385674317035 | 1             | Firefox      | 0                   | <span style="color:green;font-weight:bold">0</span> |
 
-Similarly, the probability of the session being normal traffic can also be computed:
-
-```
-P(Normal | Observed Features)
-```
-
-The classification model then compares these probabilities and selects the class with the highest value.
 
 ## How Bayes Theory Implemented in the Naive Bayes Model
 
@@ -176,43 +176,6 @@ Because Naive Bayes relies on probability distributions rather than complex opti
 - Provides probabilistic interpretation of predictions
 
 These characteristics make Naive Bayes a practical method for **cybersecurity intrusion detection**, where systems must analyze large amounts of network traffic and detect suspicious behavior efficiently.
-
-## Overview about the Dataset
-
-![alt text](asset/image.png)
-
-The dataset used in this project contains simulated cybersecurity session data that represents network activities and potential attack patterns.
-
-link to dataset: https://www.kaggle.com/datasets/dnkumars/cybersecurity-intrusion-detection-dataset
-
-Each row represents a network session and contains several features related to network behavior.
-
-### Dataset Features
-
-| Feature             | Type        | Description                                                                  |
-| ------------------- | ----------- | ---------------------------------------------------------------------------- |
-| network_packet_size | Numerical   | The size of packets transmitted during a network session.                    |
-| protocol_type       | Categorical | The network protocol used during communication (TCP or UDP).                 |
-| login_attempts      | Numerical   | Number of login attempts within the session.                                 |
-| session_duration    | Numerical   | The total duration of the network session.                                   |
-| encryption_used     | Categorical | Type of encryption used in the connection.                                   |
-| ip_reputation_score | Numerical   | A score indicating the trustworthiness of the source IP address.             |
-| failed_logins       | Numerical   | Number of failed authentication attempts.                                    |
-| browser_type        | Categorical | Browser used in the session.                                                 |
-| unusual_time_access | Binary      | Indicates whether the session occurred at an unusual time.                   |
-| attack_detected     | Binary      | Target label indicating whether the session is classified as a cyber attack. |
-
-Target label indicating whether the session is classified as a cyber attack.
-
-### Dataset 5 First Row:
-
-| session_id | network_packet_size | protocol_type | login_attempts | session_duration   | encryption_used | ip_reputation_score | failed_logins | browser_type | unusual_time_access | attack_detected                                     |
-| ---------- | ------------------- | ------------- | -------------- | ------------------ | --------------- | ------------------- | ------------- | ------------ | ------------------- | --------------------------------------------------- |
-| SID_00001  | 599                 | TCP           | 4              | 492.9832634426563  | DES             | 0.606818080396889   | 1             | Edge         | 0                   | <span style="color:red;font-weight:bold">1</span>   |
-| SID_00002  | 472                 | TCP           | 3              | 1557.9964611204384 | DES             | 0.30156896759608937 | 0             | Firefox      | 0                   | <span style="color:green;font-weight:bold">0</span> |
-| SID_00003  | 629                 | TCP           | 3              | 75.04426166420741  | DES             | 0.7391643279163831  | 2             | Chrome       | 0                   | <span style="color:red;font-weight:bold">1</span>   |
-| SID_00004  | 804                 | UDP           | 4              | 601.2488351708328  | DES             | 0.12326717575248465 | 0             | Unknown      | 0                   | <span style="color:red;font-weight:bold">1</span>   |
-| SID_00005  | 453                 | TCP           | 5              | 532.5408884201419  | AES             | 0.05487385674317035 | 1             | Firefox      | 0                   | <span style="color:green;font-weight:bold">0</span> |
 
 ## Naive Bayes Implementation for Cyber Attack Detection
 
@@ -466,6 +429,8 @@ This process is repeated for all folds to obtain stable performance metrics.
 ### 8. Model Evaluation
 
 ![alt text](asset/image-3.png)
+
+![alt text](asset/clfreport.png)
 
 Model performance is evaluated using several classification metrics derived from the **confusion matrix**.
 
