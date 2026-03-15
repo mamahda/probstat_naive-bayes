@@ -17,12 +17,12 @@ The general form of Bayes' Theorem is:
 
 Where:
 
-| Term        | Meaning                                                                                       |
-| ----------- | --------------------------------------------------------------------------------------------- |
-| (P(A \| B)) | Posterior probability: the probability of event **A** occurring given that **B** has occurred |
-| (P(B \| A)) | Likelihood: the probability of observing **B** if **A** is true                               |
-| (P(A))      | Prior probability: the initial probability of **A** before observing any evidence             |
-| (P(B))      | Evidence: the overall probability of observing **B**                                          |
+| Term      | Meaning                                                                                       |
+| --------- | --------------------------------------------------------------------------------------------- |
+| P(A \| B) | Posterior probability: the probability of event **A** occurring given that **B** has occurred |
+| P(B \| A) | Likelihood: the probability of observing **B** if **A** is true                               |
+| P(A)      | Prior probability: the initial probability of **A** before observing any evidence             |
+| P(B)      | Evidence: the overall probability of observing **B**                                          |
 
 The theorem shows how the posterior probability is computed by combining the prior belief with the likelihood of the observed evidence.
 
@@ -71,20 +71,6 @@ P(Normal | Observed Features)
 
 The classification model then compares these probabilities and selects the class with the highest value.
 
-### Importance of Bayes' Theorem in Machine Learning
-
-Bayes' Theorem forms the theoretical foundation of several probabilistic machine learning models, including the Naive Bayes classifier.
-
-In classification tasks, Bayes' Theorem allows a model to:
-
-- estimate the probability that a data instance belongs to each class
-- incorporate prior knowledge about class distributions
-- update predictions based on observed features
-
-Because of its probabilistic nature, Bayes-based models provide not only class predictions but also confidence estimates in the form of probabilities.
-
-This property makes Bayesian approaches particularly useful in applications such as spam detection, medical diagnosis, and cybersecurity intrusion detection.
-
 ## How Bayes Theory Implemented in the Naive Bayes Model
 
 The Naive Bayes classifier applies Bayes' Theorem to perform classification tasks **by estimating the probability that a data instance belongs to a particular class based on its observed features**. In the context of cybersecurity intrusion detection, the model uses Bayes' Theorem to estimate the probability that a network session is an **attack** or **normal traffic**.
@@ -97,14 +83,14 @@ The mathematical formulation used in Naive Bayes is:
 
 Where:
 
-| Term | Meaning |
-|-----|-----|
-| C | Class label (e.g., **Attack** or **Normal**) |
-| X1, X2, ..., Xn | Observed features such as protocol type, encryption used, browser type, session duration, and packet counts |
-| P(C  X1, ..., Xn) | Posterior probability: probability of class C given the observed features |
-| P(C) | Prior probability of class C |
-| P(X1, ..., Xn  C) | Likelihood: probability of observing the features if the class is C |
-| P(X1, ..., Xn) | Evidence: overall probability of observing the features |
+| Term             | Meaning                                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- |
+| C                | Class label (e.g., **Attack** or **Normal**)                                                                |
+| X1, X2, ..., Xn  | Observed features such as protocol type, encryption used, browser type, session duration, and packet counts |
+| P(C X1, ..., Xn) | Posterior probability: probability of class C given the observed features                                   |
+| P(C)             | Prior probability of class C                                                                                |
+| P(X1, ..., Xn C) | Likelihood: probability of observing the features if the class is C                                         |
+| P(X1, ..., Xn)   | Evidence: overall probability of observing the features                                                     |
 
 Since the denominator $P(X_1, ..., X_n)$ is constant for all classes, the classifier focuses on maximizing the numerator:
 
