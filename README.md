@@ -133,129 +133,147 @@ Naive Bayes is a probabilistic classification algorithm based on **Bayes' Theore
 
 #### Bayes Theorem
 
+Bayes' Theorem is a fundamental principle in probability theory that describes how to update the probability of a hypothesis based on new evidence.
+
+In the context of machine learning classification, Bayes' Theorem is used to calculate the probability that a data instance belongs to a particular class given its observed features.
+
 The general formula of Bayes' Theorem is:
 
-```
-P(C | X) = (P(X | C) * P(C)) / P(X)
-```
+![alt text](asset/bayes.png)
+
+Source: https://www.sciencedirect.com/topics/engineering/bayes-theorem
 
 Where:
 
-- `C` = class label (Attack or Normal)
-- `X` = feature vector
-- `P(C | X)` = posterior probability
-- `P(X | C)` = likelihood
-- `P(C)` = prior probability
-- `P(X)` = evidence
+- `y` = class label (Attack or Normal)
+- `x` = feature vector containing all observed features
+- `P(y | x)` = **posterior probability**, the probability that a session belongs to class `y` given the observed features `x`
+- `P(x | y)` = **likelihood**, the probability of observing the features `x` if the class is `y`
+- `P(y)` = **prior probability**, the initial probability of class `y` occurring in the dataset
+- `P(x)` = **evidence**, the probability of observing the feature vector `x`
 
-Since `P(X)` is constant for all classes, the equation becomes:
+The goal of a classifier is to determine which class has the highest posterior probability.
 
-```
-P(C | X) ∝ P(C) * Π P(x_i | C)
-```
-
-The classifier predicts the class with the highest probability:
+Since `P(x)` is the same for all classes, it does not affect the comparison between classes. Therefore the equation can be simplified to:
 
 ```
-Ĉ = argmax P(C) * Π P(x_i | C)
+P(y | X) ∝ P(y) * Π P(x_i | y)
 ```
 
-Different Naive Bayes variants assume different probability distributions for `P(x_i | C)`.
+This means that the posterior probability is proportional to the prior probability multiplied by the likelihood of each feature.
+
+The Naive Bayes classifier then predicts the class with the highest probability using the following rule:
+
+```
+ŷ = argmax P(y) * Π P(x_i | y)
+```
+
+In other words, the model calculates the probability of each class given the observed features and selects the class with the maximum probability.
+
+In the context of cyber attack detection, the model estimates the probability that a network session is an **attack** or **normal activity** based on features such as packet size, login attempts, session duration, and IP reputation score.
+
+#### Prediction Probabilities in Naive Bayes
+
+Naive Bayes is a **probabilistic classifier**, meaning that instead of only predicting a class label, the model also estimates the **probability that a data instance belongs to each possible class**.
+
+Using `predict_proba()`, the model returns the posterior probability for each class.
+
+Example output from this training:
+
+![alt text](asset/proba.png)
+
+Where:
+
+- **Prob_Normal** represents the probability that the session belongs to the **Normal** class.
+- **Prob_Attack** represents the probability that the session belongs to the **Attack** class.
+
+The predicted class corresponds to the class with the **highest probability value**.
 
 ---
 
-### Gaussian Naive Bayes
+#### Relationship with Naive Bayes
 
-Gaussian Naive Bayes assumes that continuous features follow a **normal distribution**.
-
-This model is suitable for numerical features such as:
-
-- network_packet_size  
-- session_duration  
-- ip_reputation_score  
-
-The likelihood of each feature is calculated using the Gaussian probability density function:
+In general, Naive Bayes calculates the probability of each class using Bayes' Theorem:
 
 ```
-P(x_i | C) =
-1 / sqrt(2πσ²) * exp(-(x_i - μ)² / (2σ²))
+P(y | X) ∝ P(y) * Π P(x_i | y)
 ```
 
 Where:
 
-- `μ` = mean of feature for class C
-- `σ²` = variance of feature for class C
+- `P(y | X)` = posterior probability of class `y` given the observed features `X`
+- `P(y)` = prior probability of class `y`
+- `P(x_i | y)` = likelihood of feature `x_i` given class `y`
+- `Π` = product of probabilities for all features
 
-This allows the model to estimate probabilities for continuous variables.
+The algorithm computes this value for **each possible class**.
 
-### Multinomial Naive Bayes
-
-Multinomial Naive Bayes is commonly used for **discrete count features**, such as word frequencies in text classification.
-
-The probability is estimated using:
+For example:
 
 ```
-P(x_i | C) =
-(N_ic + α) / (N_c + αn)
+P(Attack | X)
+P(Normal | X)
 ```
 
-Where:
-
-- `N_ic` = number of occurrences of feature i in class C
-- `N_c` = total feature count in class C
-- `n` = number of features
-- `α` = smoothing parameter (Laplace smoothing)
-
-Laplace smoothing prevents zero probabilities when a feature does not appear in a class.
-
-### Bernoulli Naive Bayes
-
-Bernoulli Naive Bayes is designed for **binary features**.
-
-Each feature is treated as a binary variable indicating presence or absence.
-
-The likelihood is calculated as:
+The model then compares the probabilities and selects the class with the highest value:
 
 ```
-P(x_i | C) =
-p_ic^(x_i) * (1 - p_ic)^(1 - x_i)
+ŷ = argmax P(y) * Π P(x_i | y)
 ```
 
-Where:
+---
 
-- `x_i` ∈ {0,1}
-- `p_ic` = probability that feature i appears in class C
+#### From Posterior Probability to `predict_proba()`
 
-This model is effective when features represent binary indicators.
-
-### Complement Naive Bayes
-
-Complement Naive Bayes is an improved variant of Multinomial Naive Bayes designed to handle **imbalanced datasets**.
-
-Instead of calculating probabilities from the target class directly, it uses the **complement of the class**.
-
-The weight calculation is:
+The raw posterior probabilities calculated by Naive Bayes are normalized so that the sum of probabilities across all classes equals 1:
 
 ```
-w_ci = log((N_ci + α) / (Σ N_cj + αn))
+P(Normal | X) + P(Attack | X) = 1
 ```
 
-Where:
+These normalized probabilities are exactly what the `predict_proba()` function returns.
 
-- `N_ci` = count of feature i in complement class
-- `n` = number of features
-- `α` = smoothing parameter
+For example:
 
-This approach reduces bias toward majority classes.
+```
+Prob_Normal = 0.64
+Prob_Attack = 0.36
+```
 
-### Summary of Naive Bayes Variants
+This means that the model estimates a **64% probability that the session is normal traffic** and a **36% probability that it is an attack**.
 
-| Model | Feature Assumption | Suitable Data |
-|------|------|------|
-| Gaussian NB | Continuous Gaussian distribution | Numerical features |
-| Multinomial NB | Multinomial distribution | Count-based features |
-| Bernoulli NB | Bernoulli distribution | Binary features |
-| Complement NB | Multinomial with complement weighting | Imbalanced datasets |
+---
+
+#### Interpretation in Cyber Attack Detection
+
+In the context of this project, these probabilities represent how confident the model is when classifying a network session.
+
+For example:
+
+```
+Prob_Normal = 0.023
+Prob_Attack = 0.977
+```
+
+This indicates that the model strongly believes the session corresponds to an **attack**.
+
+These probability outputs are useful for:
+
+- understanding the model's confidence in its predictions
+- analyzing misclassified samples
+- adjusting classification thresholds
+- constructing ROC and precision–recall curves
+
+Therefore, probability outputs provide deeper insight into how the Naive Bayes classifier evaluates each network session.
+
+#### Naive Bayes Model from Scikit-Learn
+
+| Model | Feature Assumption | Likelihood Formula | Parameters | Suitable Data |
+|------|------|------|------|------|
+| **Gaussian Naive Bayes** | Assumes features follow a normal (Gaussian) distribution | `P(x_i | C) = 1 / sqrt(2πσ²) * exp(-(x_i - μ)² / (2σ²))` | μ = mean of feature for class C<br>σ² = variance of feature for class C | Continuous numerical features such as `network_packet_size`, `session_duration`, `ip_reputation_score` |
+| **Multinomial Naive Bayes** | Assumes features represent counts from a multinomial distribution | `P(x_i | C) = (N_ic + α) / (N_c + αn)` | N_ic = count of feature i in class C<br>N_c = total feature count in class C<br>n = number of features<br>α = Laplace smoothing parameter | Discrete count features such as word frequencies in text classification |
+| **Bernoulli Naive Bayes** | Assumes features are binary variables (presence or absence) | `P(x_i | C) = p_ic^(x_i) * (1 - p_ic)^(1 - x_i)` | x_i ∈ {0,1}<br>p_ic = probability that feature i appears in class C | Binary features such as yes/no indicators |
+| **Complement Naive Bayes** | Variant of Multinomial NB designed for imbalanced datasets | `w_ci = log((N_ci + α) / (Σ N_cj + αn))` | N_ci = count of feature i in complement class<br>n = number of features<br>α = smoothing parameter | Imbalanced classification problems such as spam filtering or intrusion detection |
 
 In this project, these variants are compared to determine which Naive Bayes model performs best for detecting cyber attacks in network session data.
 
